@@ -58,3 +58,4 @@ logs/
 # Secrets
 *.pem
 *.key
+.github/workflows/ci.yml
