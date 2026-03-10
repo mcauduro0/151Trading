@@ -285,6 +285,59 @@ class BaseStrategy(ABC):
         """
         pass
 
+
+# ===========================================================================
+# Simplified Strategy Interface (for signal-based strategies)
+# ===========================================================================
+
+class SignalDirection(str, Enum):
+    """Direction of a trading signal."""
+    LONG = "long"
+    SHORT = "short"
+    FLAT = "flat"
+
+
+@dataclass
+class Signal:
+    """A trading signal produced by a strategy."""
+    symbol: str
+    direction: SignalDirection
+    weight: float = 0.0
+    metadata: Optional[Dict[str, Any]] = None
+
+
+class StrategyBase(ABC):
+    """Simplified base class for signal-based strategies.
+
+    This is a lighter interface than BaseStrategy, designed for strategies
+    that produce discrete signals (long/short/flat) rather than continuous
+    alpha vectors. Used by volatility, options, and macro strategies.
+    """
+
+    def __init__(self, strategy_id: str, name: str, asset_class: AssetClass,
+                 style: StrategyStyle, description: str = ""):
+        self.strategy_id = strategy_id
+        self.name = name
+        self.asset_class = asset_class
+        self.style = style
+        self.description = description
+
+    @abstractmethod
+    def required_data(self) -> Dict[str, str]:
+        """Return dict of data requirements: {key: source_spec}."""
+        pass
+
+    @abstractmethod
+    def generate_signals(self, data: Dict[str, pd.DataFrame]) -> List[Signal]:
+        """Generate trading signals from input data."""
+        pass
+
+    def risk_checks(self, signals: List[Signal],
+                    portfolio_state: Optional[Dict] = None) -> List[Signal]:
+        """Apply risk management filters to signals. Override for custom logic."""
+        return signals
+
+
     def validate_params(self, params: Dict[str, Any]) -> List[str]:
         """Validate strategy parameters against bounds.
 
