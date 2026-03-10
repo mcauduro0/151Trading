@@ -1,0 +1,144 @@
+version: "3.9"
+
+services:
+  # ─── PostgreSQL + TimescaleDB ───────────────────────────────────────
+  postgres:
+    image: timescale/timescaledb:latest-pg16
+    container_name: ts_postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-trading_system}
+      POSTGRES_USER: ${POSTGRES_USER:-trading}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infra/docker/init-db.sql:/docker-entrypoint-initdb.d/01-init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-trading} -d ${POSTGRES_DB:-trading_system}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ─── Redis ──────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: ts_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ─── FastAPI Backend ────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ts_backend
+    env_file: .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./strategies:/app/strategies
+      - ./shared:/app/shared
+      - ./data:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # ─── Celery Worker ─────────────────────────────────────────────────
+  celery_worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ts_celery_worker
+    command: celery -A app.workers.celery_app worker --loglevel=info --concurrency=4
+    env_file: .env
+    volumes:
+      - ./backend:/app
+      - ./strategies:/app/strategies
+      - ./data:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ─── Celery Beat (Scheduler) ───────────────────────────────────────
+  celery_beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ts_celery_beat
+    command: celery -A app.workers.celery_app beat --loglevel=info
+    env_file: .env
+    volumes:
+      - ./backend:/app
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ─── Next.js Frontend ──────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ts_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+      - NEXT_PUBLIC_WS_URL=${NEXT_PUBLIC_WS_URL:-ws://localhost:8000}
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # ─── Prometheus ─────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: ts_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infra/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    restart: unless-stopped
+
+  # ─── Grafana ────────────────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:latest
+    container_name: ts_grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./infra/monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
