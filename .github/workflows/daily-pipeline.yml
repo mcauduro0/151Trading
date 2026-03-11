@@ -37,7 +37,7 @@ jobs:
           pip install numpy pandas yfinance fredapi requests scipy
           pip install alpaca-trade-api polygon-api-client
 
-      - name: Run Daily Pipeline
+      - name: Run Daily Pipeline + Execute Orders
         env:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
           FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
@@ -48,12 +48,16 @@ jobs:
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
         run: |
           echo "=========================================="
-          echo "  GB Trading — Daily Pipeline"
+          echo "  GB Trading — Daily Pipeline + Execution"
           echo "  Date: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
           echo "  Dry Run: $DRY_RUN"
           echo "=========================================="
-          cd strategies/automation
-          python daily_pipeline.py 2>&1 | tee /tmp/pipeline_output.txt
+          if [ "$DRY_RUN" = "true" ]; then
+            cd strategies/automation
+            python daily_pipeline.py 2>&1 | tee /tmp/pipeline_output.txt
+          else
+            python run_pipeline_and_trade.py 2>&1 | tee /tmp/pipeline_output.txt
+          fi
           EXIT_CODE=${PIPESTATUS[0]}
           echo "Pipeline exit code: $EXIT_CODE"
           exit $EXIT_CODE
