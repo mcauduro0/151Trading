@@ -1,0 +1,91 @@
+name: Daily Signal Generation Pipeline
+
+on:
+  schedule:
+    # Run at 14:00 UTC (9:00 AM ET / 11:00 AM BRT) — before US market open
+    - cron: '0 14 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Run in dry-run mode (no orders submitted)'
+        required: false
+        default: 'false'
+        type: boolean
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  daily-pipeline:
+    name: Execute Daily Trading Pipeline
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install numpy pandas yfinance fredapi requests scipy
+          pip install alpaca-trade-api polygon-api-client
+
+      - name: Run Daily Pipeline
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+          POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
+          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
+          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
+          ALPACA_BASE_URL: https://paper-api.alpaca.markets
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+        run: |
+          echo "=========================================="
+          echo "  GB Trading — Daily Pipeline"
+          echo "  Date: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "  Dry Run: $DRY_RUN"
+          echo "=========================================="
+          cd strategies/automation
+          python daily_pipeline.py 2>&1 | tee /tmp/pipeline_output.txt
+          EXIT_CODE=${PIPESTATUS[0]}
+          echo "Pipeline exit code: $EXIT_CODE"
+          exit $EXIT_CODE
+
+      - name: Upload pipeline report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-report-${{ github.run_number }}
+          path: /tmp/pipeline_output.txt
+          retention-days: 30
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "::error::Daily pipeline failed! Check the pipeline report artifact for details."
+          echo "Pipeline failed at $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Pipeline Output" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -50 /tmp/pipeline_output.txt >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "No output captured" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Summary on success
+        if: success()
+        run: |
+          echo "### Daily Pipeline Completed Successfully" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Date:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "- **Run:** #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Pipeline Output (last 30 lines)" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -30 /tmp/pipeline_output.txt >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "No output captured" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
