@@ -1,0 +1,94 @@
+{
+  "pipeline": {
+    "run_id": "daily_20260311_154242",
+    "run_date": "2026-03-11",
+    "start_time": "2026-03-11T15:42:42.680620",
+    "end_time": "2026-03-11T15:42:49.723309",
+    "total_duration_seconds": 7.039999999999999,
+    "total_signals": 451,
+    "total_orders": 50,
+    "risk_passed": true,
+    "overall_status": "SUCCESS_WITH_WARNINGS",
+    "stages": [
+      {
+        "stage": "data_ingestion",
+        "success": true,
+        "duration_seconds": 4.68,
+        "records_processed": 3321,
+        "signals_generated": 0,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "stage": "data_quality",
+        "success": true,
+        "duration_seconds": 0.0,
+        "records_processed": 0,
+        "signals_generated": 0,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "stage": "signal_generation",
+        "success": true,
+        "duration_seconds": 2.36,
+        "records_processed": 0,
+        "signals_generated": 401,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "stage": "risk_check",
+        "success": true,
+        "duration_seconds": 0.0,
+        "records_processed": 0,
+        "signals_generated": 0,
+        "errors": [],
+        "warnings": [
+          "Signal count (401) exceeds max orders (50). Top 50 by strength will be used."
+        ]
+      },
+      {
+        "stage": "order_generation",
+        "success": true,
+        "duration_seconds": 0.0,
+        "records_processed": 0,
+        "signals_generated": 50,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "stage": "reporting",
+        "success": true,
+        "duration_seconds": 0.0,
+        "records_processed": 0,
+        "signals_generated": 0,
+        "errors": [],
+        "warnings": []
+      }
+    ]
+  },
+  "execution": {
+    "submitted": [
+      {
+        "symbol": "TSLA",
+        "notional": 43306.81,
+        "order_id": "8b842220-45f6-4184-8984-1ea07ed77ae1"
+      },
+      {
+        "symbol": "GOOGL",
+        "notional": 43306.81,
+        "order_id": "7753af5e-1638-4fa0-83bc-a9e24f901710"
+      },
+      {
+        "symbol": "GS",
+        "notional": 43306.81,
+        "order_id": "13d4651d-1d6c-48a9-ab0b-39a2db3fc180"
+      }
+    ],
+    "failed": [],
+    "account_equity": 866136.28,
+    "buying_power": 1732272.56,
+    "timestamp": "2026-03-11T15:42:51.644516"
+  }
+}

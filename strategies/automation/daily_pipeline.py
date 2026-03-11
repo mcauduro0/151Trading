@@ -332,12 +332,15 @@ class DailyPipeline:
                 )
 
         # Run each strategy group
+        all_raw_signals = []
         for group, strategy_ids in self.config["strategies"].items():
             for sid in strategy_ids:
                 try:
                     signals = self._run_single_strategy(sid, market_data)
                     n_signals = len(signals) if signals else 0
                     total_signals += n_signals
+                    if signals:
+                        all_raw_signals.extend(signals)
                     strategy_results[sid] = {
                         "signals": n_signals,
                         "status": "OK",
@@ -365,6 +368,7 @@ class DailyPipeline:
                 "strategies_with_signals": sum(
                     1 for v in strategy_results.values() if v["signals"] > 0
                 ),
+                "raw_signals": all_raw_signals,
             },
         )
 
@@ -645,12 +649,8 @@ class DailyPipeline:
         signal_result = self.run_signal_generation()
         self.report.stages.append(signal_result)
 
-        # Collect all signals
-        all_signals = []
-        if signal_result.details.get("strategy_results"):
-            for sid, info in signal_result.details["strategy_results"].items():
-                if info.get("signals", 0) > 0:
-                    all_signals.extend([{"strategy": sid, "direction": "long", "signal_strength": 0.5, "ticker": "AAPL"}])
+        # Collect all signals from the actual signal generation output
+        all_signals = signal_result.details.get("raw_signals", [])
 
         # Stage 4: Risk Check
         logger.info("Stage 4: Risk Check")
