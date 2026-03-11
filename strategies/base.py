@@ -285,6 +285,24 @@ class BaseStrategy(ABC):
         """
         pass
 
+    def validate_params(self, params: Dict[str, Any]) -> List[str]:
+        """Validate strategy parameters against bounds defined in metadata.
+
+        Returns list of validation error strings.
+        """
+        metadata = self.get_metadata()
+        errors = []
+
+        for param_name, (lower, upper) in metadata.parameter_bounds.items():
+            if param_name in params:
+                value = params[param_name]
+                if value < lower or value > upper:
+                    errors.append(
+                        f"Parameter '{param_name}' = {value} is outside bounds [{lower}, {upper}]"
+                    )
+
+        return errors
+
 
 # ===========================================================================
 # Simplified Strategy Interface (for signal-based strategies)
