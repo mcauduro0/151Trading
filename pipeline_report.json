@@ -1,94 +1,147 @@
 {
+  "run_date": "2026-03-16T14:26:05.907102",
   "pipeline": {
-    "run_id": "daily_20260311_154242",
-    "run_date": "2026-03-11",
-    "start_time": "2026-03-11T15:42:42.680620",
-    "end_time": "2026-03-11T15:42:49.723309",
-    "total_duration_seconds": 7.039999999999999,
-    "total_signals": 451,
-    "total_orders": 50,
-    "risk_passed": true,
-    "overall_status": "SUCCESS_WITH_WARNINGS",
-    "stages": [
-      {
-        "stage": "data_ingestion",
-        "success": true,
-        "duration_seconds": 4.68,
-        "records_processed": 3321,
-        "signals_generated": 0,
-        "errors": [],
-        "warnings": []
-      },
-      {
-        "stage": "data_quality",
-        "success": true,
-        "duration_seconds": 0.0,
-        "records_processed": 0,
-        "signals_generated": 0,
-        "errors": [],
-        "warnings": []
-      },
-      {
-        "stage": "signal_generation",
-        "success": true,
-        "duration_seconds": 2.36,
-        "records_processed": 0,
-        "signals_generated": 401,
-        "errors": [],
-        "warnings": []
-      },
-      {
-        "stage": "risk_check",
-        "success": true,
-        "duration_seconds": 0.0,
-        "records_processed": 0,
-        "signals_generated": 0,
-        "errors": [],
-        "warnings": [
-          "Signal count (401) exceeds max orders (50). Top 50 by strength will be used."
-        ]
-      },
-      {
-        "stage": "order_generation",
-        "success": true,
-        "duration_seconds": 0.0,
-        "records_processed": 0,
-        "signals_generated": 50,
-        "errors": [],
-        "warnings": []
-      },
-      {
-        "stage": "reporting",
-        "success": true,
-        "duration_seconds": 0.0,
-        "records_processed": 0,
-        "signals_generated": 0,
-        "errors": [],
-        "warnings": []
-      }
-    ]
+    "status": "SUCCESS_WITH_WARNINGS",
+    "total_signals": 445,
+    "buy_signals": 9,
+    "sell_signals": 8
   },
-  "execution": {
-    "submitted": [
+  "portfolio": {
+    "equity": 864047.61,
+    "positions_before": 10,
+    "exits": [
+      {
+        "symbol": "MA",
+        "status": "closed",
+        "reason": "Sell signal (strength=0.03)"
+      }
+    ],
+    "rebalances": [
+      {
+        "symbol": "CVX",
+        "action": "topup",
+        "amount": 167135.34,
+        "status": "ok"
+      },
+      {
+        "symbol": "AMZN",
+        "action": "topup",
+        "amount": 61550.39,
+        "status": "ok"
+      },
+      {
+        "symbol": "JNJ",
+        "action": "topup",
+        "amount": 60354.34,
+        "status": "ok"
+      },
+      {
+        "symbol": "XOM",
+        "action": "topup",
+        "amount": 38909.8,
+        "status": "ok"
+      },
+      {
+        "symbol": "NVDA",
+        "action": "topup",
+        "amount": 28492.46,
+        "status": "ok"
+      },
       {
         "symbol": "TSLA",
-        "notional": 43306.81,
-        "order_id": "8b842220-45f6-4184-8984-1ea07ed77ae1"
+        "action": "topup",
+        "amount": 11613.57,
+        "status": "ok"
       },
       {
-        "symbol": "GOOGL",
-        "notional": 43306.81,
-        "order_id": "7753af5e-1638-4fa0-83bc-a9e24f901710"
+        "symbol": "UNH",
+        "action": "topup",
+        "amount": 7198.44,
+        "status": "ok"
       },
       {
         "symbol": "GS",
-        "notional": 43306.81,
-        "order_id": "13d4651d-1d6c-48a9-ab0b-39a2db3fc180"
+        "action": "topup",
+        "amount": 5818.3,
+        "status": "ok"
+      },
+      {
+        "symbol": "GOOGL",
+        "action": "topup",
+        "amount": 4957.4,
+        "status": "ok"
       }
     ],
-    "failed": [],
-    "account_equity": 866136.28,
-    "buying_power": 1732272.56,
-    "timestamp": "2026-03-11T15:42:51.644516"
+    "entries": []
+  },
+  "signal_map": {
+    "AAPL": {
+      "direction": "short",
+      "strength": 2.0041075322896473
+    },
+    "GOOGL": {
+      "direction": "long",
+      "strength": 0.22274672139281426
+    },
+    "NVDA": {
+      "direction": "long",
+      "strength": 1.2802271168554546
+    },
+    "TSLA": {
+      "direction": "long",
+      "strength": 0.521822634367147
+    },
+    "JPM": {
+      "direction": "short",
+      "strength": 1.4240951880243786
+    },
+    "BAC": {
+      "direction": "short",
+      "strength": 2.966719626638369
+    },
+    "GS": {
+      "direction": "long",
+      "strength": 0.2614288274823202
+    },
+    "XOM": {
+      "direction": "long",
+      "strength": 1.7483003260011798
+    },
+    "CVX": {
+      "direction": "long",
+      "strength": 7.509747767172641
+    },
+    "PFE": {
+      "direction": "short",
+      "strength": 1.688124752988594
+    },
+    "JNJ": {
+      "direction": "long",
+      "strength": 2.711849393294141
+    },
+    "MA": {
+      "direction": "short",
+      "strength": 0.026456650619345934
+    },
+    "V": {
+      "direction": "short",
+      "strength": 0.5023760577409059
+    },
+    "MSFT": {
+      "direction": "short",
+      "strength": 0.5736936035181317
+    },
+    "AMZN": {
+      "direction": "long",
+      "strength": 2.765590590440396
+    },
+    "META": {
+      "direction": "short",
+      "strength": 0.9755130285392025
+    },
+    "UNH": {
+      "direction": "long",
+      "strength": 0.3234413257901826
+    }
   }
 }

@@ -34,8 +34,13 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install numpy pandas yfinance fredapi requests scipy
+          # Install alpaca-trade-api FIRST, then yfinance
+          # alpaca-trade-api pins websockets<11, but yfinance needs websockets>=13
+          # We install alpaca-trade-api first, then force-upgrade websockets via yfinance
           pip install alpaca-trade-api polygon-api-client
+          pip install numpy pandas yfinance fredapi requests scipy
+          # Ensure websockets is compatible with yfinance (>=13)
+          pip install 'websockets>=13'
 
       - name: Run Daily Pipeline + Execute Orders
         env:
