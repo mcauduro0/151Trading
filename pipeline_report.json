@@ -1,135 +1,227 @@
 {
-  "run_date": "2026-03-16T14:34:39.202609",
+  "run_date": "2026-03-16T14:50:29.735756",
+  "version": "v2_all_assets_shorts",
   "pipeline": {
     "status": "SUCCESS_WITH_WARNINGS",
-    "total_signals": 446,
-    "buy_signals": 8,
-    "sell_signals": 9
+    "total_signals": 445,
+    "long_signals": 8,
+    "short_signals": 13,
+    "by_asset_class": {
+      "etf": 4,
+      "equity": 17
+    }
   },
   "portfolio": {
-    "equity": 862974.91,
+    "equity": 860850.23,
     "positions_before": 8,
     "exits": [],
     "rebalances": [
       {
         "symbol": "CVX",
         "action": "topup",
-        "amount": 28054.48,
+        "amount": 32307.8,
         "status": "ok"
       },
       {
         "symbol": "AMZN",
         "action": "topup",
-        "amount": 28054.48,
+        "amount": 32307.8,
         "status": "ok"
       },
       {
         "symbol": "JNJ",
         "action": "topup",
-        "amount": 28054.48,
+        "amount": 32307.8,
         "status": "ok"
       },
       {
         "symbol": "XOM",
         "action": "topup",
-        "amount": 28054.48,
+        "amount": 32307.8,
         "status": "ok"
       },
       {
         "symbol": "NVDA",
         "action": "topup",
-        "amount": 28054.48,
+        "amount": 32307.8,
+        "status": "ok"
+      },
+      {
+        "symbol": "QQQ",
+        "action": "topup",
+        "amount": 32307.8,
         "status": "ok"
       },
       {
         "symbol": "TSLA",
         "action": "topup",
-        "amount": 28054.48,
+        "amount": 32307.8,
         "status": "ok"
       },
       {
         "symbol": "UNH",
         "action": "topup",
-        "amount": 28054.48,
-        "status": "ok"
-      },
-      {
-        "symbol": "GS",
-        "action": "topup",
-        "amount": 28054.48,
+        "amount": 32307.8,
         "status": "ok"
       }
     ],
-    "entries": []
+    "entries": [
+      {
+        "symbol": "DIA",
+        "side": "short",
+        "notional": 34434.0092,
+        "order_id": "eb8ea295-91e9-4046-84ca-de03fa6bd107",
+        "asset_class": "etf"
+      },
+      {
+        "symbol": "BAC",
+        "side": "short",
+        "notional": 34434.0092,
+        "order_id": "998e4e96-e885-4f2a-91eb-536e8d294951",
+        "asset_class": "equity"
+      },
+      {
+        "symbol": "IWM",
+        "side": "short",
+        "notional": 34434.0092,
+        "order_id": "8ef4218a-eb9a-4ef9-a4b4-5ac168dc48cd",
+        "asset_class": "etf"
+      },
+      {
+        "symbol": "SPY",
+        "side": "short",
+        "notional": 34434.0092,
+        "order_id": "6646be09-497a-431b-ba95-37b14434ed77",
+        "asset_class": "etf"
+      },
+      {
+        "symbol": "AAPL",
+        "side": "short",
+        "notional": 34434.0092,
+        "order_id": "323da06d-bd3a-4927-a39f-a6e02ed2ba9e",
+        "asset_class": "equity"
+      },
+      {
+        "symbol": "JPM",
+        "side": "short",
+        "notional": 34434.0092,
+        "order_id": "31f472e6-1f74-48d4-b1d7-c06fc0ccee86",
+        "asset_class": "equity"
+      },
+      {
+        "symbol": "PFE",
+        "side": "short",
+        "notional": 34434.0092,
+        "order_id": "61def5d2-7d57-432b-8618-100f77a27d99",
+        "asset_class": "equity"
+      }
+    ]
   },
   "signal_map": {
+    "SPY": {
+      "direction": "short",
+      "strength": 2.155632720225804,
+      "asset_class": "etf"
+    },
+    "QQQ": {
+      "direction": "long",
+      "strength": 0.7274287386936936,
+      "asset_class": "etf"
+    },
+    "IWM": {
+      "direction": "short",
+      "strength": 2.3282081497790124,
+      "asset_class": "etf"
+    },
+    "DIA": {
+      "direction": "short",
+      "strength": 5.610176230747227,
+      "asset_class": "etf"
+    },
     "AAPL": {
       "direction": "short",
-      "strength": 2.007584148901164
+      "strength": 2.0180475333962855,
+      "asset_class": "equity"
     },
     "GOOGL": {
       "direction": "short",
-      "strength": 0.2117506685998567
+      "strength": 0.3261526912383974,
+      "asset_class": "equity"
     },
     "NVDA": {
       "direction": "long",
-      "strength": 1.1193760006813627
+      "strength": 1.0320549012765454,
+      "asset_class": "equity"
     },
     "TSLA": {
       "direction": "long",
-      "strength": 0.2825903604409805
+      "strength": 0.1842827674087717,
+      "asset_class": "equity"
     },
     "JPM": {
       "direction": "short",
-      "strength": 1.5228458895026677
+      "strength": 1.8112482556870744,
+      "asset_class": "equity"
     },
     "BAC": {
       "direction": "short",
-      "strength": 3.1527019119681152
+      "strength": 3.381570182369318,
+      "asset_class": "equity"
     },
     "GS": {
-      "direction": "long",
-      "strength": 0.17752708887063084
+      "direction": "short",
+      "strength": 0.5140921517679922,
+      "asset_class": "equity"
     },
     "XOM": {
       "direction": "long",
-      "strength": 1.8271079632964669
+      "strength": 1.7789443645034493,
+      "asset_class": "equity"
     },
     "CVX": {
       "direction": "long",
-      "strength": 5.64377389228836
+      "strength": 7.432316123668331,
+      "asset_class": "equity"
     },
     "PFE": {
       "direction": "short",
-      "strength": 1.8948680798896254
+      "strength": 1.678510102774682,
+      "asset_class": "equity"
     },
     "JNJ": {
       "direction": "long",
-      "strength": 2.363135274198174
+      "strength": 2.3192866801222305,
+      "asset_class": "equity"
     },
     "MA": {
       "direction": "short",
-      "strength": 0.4655525987752497
+      "strength": 0.6617419692183817,
+      "asset_class": "equity"
     },
     "V": {
       "direction": "short",
-      "strength": 0.8654923605927377
+      "strength": 1.079938041501944,
+      "asset_class": "equity"
     },
     "MSFT": {
       "direction": "short",
-      "strength": 0.6350969470977036
+      "strength": 0.7881877260713529,
+      "asset_class": "equity"
     },
     "AMZN": {
       "direction": "long",
-      "strength": 2.501974422218221
+      "strength": 2.336326262127227,
+      "asset_class": "equity"
     },
     "META": {
       "direction": "short",
-      "strength": 1.177415822849517
+      "strength": 1.394434443268821,
+      "asset_class": "equity"
     },
     "UNH": {
       "direction": "long",
-      "strength": 0.261540979111515
+      "strength": 0.16693961346404892,
+      "asset_class": "equity"
     }
   }
 }
