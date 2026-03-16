@@ -1,74 +1,62 @@
 {
-  "run_date": "2026-03-16T14:26:05.907102",
+  "run_date": "2026-03-16T14:34:39.202609",
   "pipeline": {
     "status": "SUCCESS_WITH_WARNINGS",
-    "total_signals": 445,
-    "buy_signals": 9,
-    "sell_signals": 8
+    "total_signals": 446,
+    "buy_signals": 8,
+    "sell_signals": 9
   },
   "portfolio": {
-    "equity": 864047.61,
-    "positions_before": 10,
-    "exits": [
-      {
-        "symbol": "MA",
-        "status": "closed",
-        "reason": "Sell signal (strength=0.03)"
-      }
-    ],
+    "equity": 862974.91,
+    "positions_before": 8,
+    "exits": [],
     "rebalances": [
       {
         "symbol": "CVX",
         "action": "topup",
-        "amount": 167135.34,
+        "amount": 28054.48,
         "status": "ok"
       },
       {
         "symbol": "AMZN",
         "action": "topup",
-        "amount": 61550.39,
+        "amount": 28054.48,
         "status": "ok"
       },
       {
         "symbol": "JNJ",
         "action": "topup",
-        "amount": 60354.34,
+        "amount": 28054.48,
         "status": "ok"
       },
       {
         "symbol": "XOM",
         "action": "topup",
-        "amount": 38909.8,
+        "amount": 28054.48,
         "status": "ok"
       },
       {
         "symbol": "NVDA",
         "action": "topup",
-        "amount": 28492.46,
+        "amount": 28054.48,
         "status": "ok"
       },
       {
         "symbol": "TSLA",
         "action": "topup",
-        "amount": 11613.57,
+        "amount": 28054.48,
         "status": "ok"
       },
       {
         "symbol": "UNH",
         "action": "topup",
-        "amount": 7198.44,
+        "amount": 28054.48,
         "status": "ok"
       },
       {
         "symbol": "GS",
         "action": "topup",
-        "amount": 5818.3,
-        "status": "ok"
-      },
-      {
-        "symbol": "GOOGL",
-        "action": "topup",
-        "amount": 4957.4,
+        "amount": 28054.48,
         "status": "ok"
       }
     ],
@@ -77,71 +65,71 @@
   "signal_map": {
     "AAPL": {
       "direction": "short",
-      "strength": 2.0041075322896473
+      "strength": 2.007584148901164
     },
     "GOOGL": {
-      "direction": "long",
-      "strength": 0.22274672139281426
+      "direction": "short",
+      "strength": 0.2117506685998567
     },
     "NVDA": {
       "direction": "long",
-      "strength": 1.2802271168554546
+      "strength": 1.1193760006813627
     },
     "TSLA": {
       "direction": "long",
-      "strength": 0.521822634367147
+      "strength": 0.2825903604409805
     },
     "JPM": {
       "direction": "short",
-      "strength": 1.4240951880243786
+      "strength": 1.5228458895026677
     },
     "BAC": {
       "direction": "short",
-      "strength": 2.966719626638369
+      "strength": 3.1527019119681152
     },
     "GS": {
       "direction": "long",
-      "strength": 0.2614288274823202
+      "strength": 0.17752708887063084
     },
     "XOM": {
       "direction": "long",
-      "strength": 1.7483003260011798
+      "strength": 1.8271079632964669
     },
     "CVX": {
       "direction": "long",
-      "strength": 7.509747767172641
+      "strength": 5.64377389228836
     },
     "PFE": {
       "direction": "short",
-      "strength": 1.688124752988594
+      "strength": 1.8948680798896254
     },
     "JNJ": {
       "direction": "long",
-      "strength": 2.711849393294141
+      "strength": 2.363135274198174
     },
     "MA": {
       "direction": "short",
-      "strength": 0.026456650619345934
+      "strength": 0.4655525987752497
     },
     "V": {
       "direction": "short",
-      "strength": 0.5023760577409059
+      "strength": 0.8654923605927377
     },
     "MSFT": {
       "direction": "short",
-      "strength": 0.5736936035181317
+      "strength": 0.6350969470977036
     },
     "AMZN": {
       "direction": "long",
-      "strength": 2.765590590440396
+      "strength": 2.501974422218221
     },
     "META": {
       "direction": "short",
-      "strength": 0.9755130285392025
+      "strength": 1.177415822849517
     },
     "UNH": {
       "direction": "long",
-      "strength": 0.3234413257901826
+      "strength": 0.261540979111515
     }
   }
 }

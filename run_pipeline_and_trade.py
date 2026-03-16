@@ -32,8 +32,8 @@ logging.basicConfig(
 logger = logging.getLogger("gb_trading.executor")
 
 # ── Configuration ──────────────────────────────────────────────────────────
-TARGET_WEIGHT = 0.055          # 5.5% per position (allows slight overweight)
-MAX_WEIGHT = 0.08              # 8% hard cap before trimming
+TARGET_WEIGHT = 0.055          # 5.5% per position (target for new entries)
+MAX_WEIGHT = 0.15              # 15% hard cap before trimming
 MIN_WEIGHT = 0.03              # 3% floor before topping up
 REBALANCE_THRESHOLD = 0.015    # 1.5% drift triggers rebalance
 MAX_POSITIONS = 20             # Maximum concurrent positions
@@ -249,42 +249,45 @@ def analyze_portfolio(positions, equity, signal_map, cash):
                 "strategies": strategies,
             })
 
-    # 4. REINFORCE: If we have excess cash and no new tickers to enter,
-    #    top up existing positions with strong BUY signals
-    #    Target: deploy at least 85% of equity into positions
-    total_invested = sum(d["market_value"] for s, d in held.items() if s not in exit_symbols)
-    invested_pct = total_invested / equity if equity > 0 else 0
-    target_invested_pct = 1.0 - CASH_RESERVE_PCT  # 90%
-
-    if invested_pct < target_invested_pct and len(entries) == 0:
-        # We have excess cash and no new entries — reinforce existing positions
-        cash_to_deploy = (target_invested_pct * equity) - total_invested
-        if cash_to_deploy > MIN_ORDER_VALUE:
-            # Rank held positions by buy signal strength
-            reinforce_candidates = []
-            for sym in still_held:
-                sig = signal_map.get(sym)
-                if sig and sig["direction"] == "long":
-                    reinforce_candidates.append((sym, sig["strength"], held[sym]["market_value"]))
+    # 4. REINFORCE: Deploy excess cash into positions with BUY signals
+    #    Account for cash freed by exits and cash consumed by entries
+    #    Target: keep invested at (1 - CASH_RESERVE_PCT) of equity
+    exit_cash = sum(e["market_value"] for e in exits)  # Cash freed by exits
+    entry_count = len(entries)  # Entries will consume cash
+    
+    # Estimate invested after exits + entries
+    invested_after = sum(d["market_value"] for s, d in held.items() if s not in exit_symbols)
+    # Entries will add to invested (estimated at target_weight * equity each)
+    entry_investment = entry_count * TARGET_WEIGHT * equity
+    invested_after += entry_investment
+    
+    target_invested = (1.0 - CASH_RESERVE_PCT) * equity  # 90%
+    cash_to_deploy = target_invested - invested_after
+    
+    if cash_to_deploy > MIN_ORDER_VALUE:
+        # Find candidates: held positions with BUY signals (not being exited)
+        reinforce_candidates = []
+        for sym in still_held:
+            sig = signal_map.get(sym)
+            if sig and sig["direction"] == "long":
+                reinforce_candidates.append((sym, sig["strength"], held[sym]["market_value"]))
+        
+        reinforce_candidates.sort(key=lambda x: x[1], reverse=True)
+        
+        if reinforce_candidates:
+            # Equal-weight distribution, capped at MAX_WEIGHT per position
+            equal_share = cash_to_deploy / len(reinforce_candidates)
             
-            reinforce_candidates.sort(key=lambda x: x[1], reverse=True)
-            
-            if reinforce_candidates:
-                # Distribute cash equally among candidates, capped at MAX_WEIGHT per position
-                # Equal-weight distribution prevents over-concentration
-                equal_share = cash_to_deploy / len(reinforce_candidates)
-                
-                for sym, strength, current_mv in reinforce_candidates:
-                    # Cap: don't let any position exceed MAX_WEIGHT of equity
-                    max_additional = (MAX_WEIGHT * equity) - current_mv
-                    share = min(equal_share, max(0, max_additional))
-                    if share > MIN_ORDER_VALUE:
-                        rebalances.append({
-                            "symbol": sym,
-                            "action": "topup",
-                            "amount": round(share, 2),
-                            "reason": f"Reinforce (signal={strength:.2f}, equal-weight deploy, cap {MAX_WEIGHT*100:.0f}%)",
-                        })
+            for sym, strength, current_mv in reinforce_candidates:
+                max_additional = (MAX_WEIGHT * equity) - current_mv
+                share = min(equal_share, max(0, max_additional))
+                if share > MIN_ORDER_VALUE:
+                    rebalances.append({
+                        "symbol": sym,
+                        "action": "topup",
+                        "amount": round(share, 2),
+                        "reason": f"Deploy cash (signal={strength:.2f}, equal-weight, cap {MAX_WEIGHT*100:.0f}%)",
+                    })
 
     return exits, entries, rebalances
 
